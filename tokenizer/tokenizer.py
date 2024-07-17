@@ -1,6 +1,5 @@
 
-
-
+import re
 
 class LetterLevelTokenizer:
     def __init__(self):
@@ -41,3 +40,66 @@ class LetterLevelTokenizer:
         str: The combined string.
         """
         return ''.join(self.index_to_char[token] for token in tokens)
+    
+
+
+class WordLevelTokenizer:
+    def __init__(self):
+        """Initialize the tokenizer with dictionaries for encoding and decoding."""
+        self.word_to_index = {}
+        self.index_to_word = {}
+        self.next_index = 0
+
+    def fit(self, corpus):
+        """
+        Build vocabulary from the given text corpus.
+
+        Parameters:
+        corpus (str): The entire text corpus to build the vocabulary.
+        """
+        words = self._preprocess_text(corpus)
+        unique_words = set(words)
+        for word in unique_words:
+            if word not in self.word_to_index:
+                self.word_to_index[word] = self.next_index
+                self.index_to_word[self.next_index] = word
+                self.next_index += 1
+
+    def _preprocess_text(self, text):
+        """
+        Preprocess the text by converting to lowercase and splitting into words.
+
+        Parameters:
+        text (str): The text to preprocess.
+
+        Returns:
+        list: A list of words.
+        """
+        text = text.lower()
+        words = re.findall(r'\b\w+\b', text)
+        return words
+
+    def tokenize(self, text):
+        """
+        Tokenize the given text at the word level.
+
+        Parameters:
+        text (str): The text to tokenize.
+
+        Returns:
+        list: A list of integer indices representing each word.
+        """
+        words = self._preprocess_text(text)
+        return [self.word_to_index[word] for word in words if word in self.word_to_index]
+
+    def detokenize(self, tokens):
+        """
+        Convert a list of tokens back into a string.
+
+        Parameters:
+        tokens (list): The list of tokens to detokenize.
+
+        Returns:
+        str: The combined string.
+        """
+        return ' '.join(self.index_to_word[token] for token in tokens)
