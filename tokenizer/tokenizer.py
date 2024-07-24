@@ -1,4 +1,4 @@
-
+from tqdm import tqdm
 import re
 
 class LetterLevelTokenizer:
@@ -59,7 +59,7 @@ class WordLevelTokenizer:
         """
         words = self._preprocess_text(corpus)
         unique_words = set(words)
-        for word in unique_words:
+        for word in tqdm(unique_words, desc="Building Vocabulary"):
             if word not in self.word_to_index:
                 self.word_to_index[word] = self.next_index
                 self.index_to_word[self.next_index] = word
@@ -67,27 +67,27 @@ class WordLevelTokenizer:
 
     def _preprocess_text(self, text):
         """
-        Preprocess the text by converting to lowercase and splitting into words.
+        Preprocess the text by converting to lowercase and splitting into words and punctuation.
 
         Parameters:
         text (str): The text to preprocess.
 
         Returns:
-        list: A list of words.
+        list: A list of words and punctuation.
         """
         text = text.lower()
-        words = re.findall(r'\b\w+\b', text)
+        words = re.findall(r'\b\w+\b|[^\w\s]', text)
         return words
 
     def tokenize(self, text):
         """
-        Tokenize the given text at the word level.
+        Tokenize the given text at the word and punctuation level.
 
         Parameters:
         text (str): The text to tokenize.
 
         Returns:
-        list: A list of integer indices representing each word.
+        list: A list of integer indices representing each word and punctuation.
         """
         words = self._preprocess_text(text)
         return [self.word_to_index[word] for word in words if word in self.word_to_index]
