@@ -11,11 +11,11 @@ device
 max_iters = 100000
 learning_rate = 3e-4
 block_size = 8
-batch_size = 4
+batch_size = 8
 eval_iters = 10000
-n_emb = 384
-n_layers = 4
-n_head = 4
+n_emb = 768
+n_layers = 8
+n_head = 8
 dropout = 0.1
 
 
