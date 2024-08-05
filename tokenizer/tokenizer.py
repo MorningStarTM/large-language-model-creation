@@ -1,5 +1,6 @@
 from tqdm import tqdm
 import re
+from collections import OrderedDict
 
 class LetterLevelTokenizer:
     def __init__(self):
@@ -46,7 +47,7 @@ class LetterLevelTokenizer:
 class WordLevelTokenizer:
     def __init__(self):
         """Initialize the tokenizer with dictionaries for encoding and decoding."""
-        self.word_to_index = {}
+        self.word_to_index = OrderedDict()  # Use OrderedDict for deterministic order
         self.index_to_word = {}
         self.next_index = 0
 
@@ -58,7 +59,7 @@ class WordLevelTokenizer:
         corpus (str): The entire text corpus to build the vocabulary.
         """
         words = self._preprocess_text(corpus)
-        unique_words = set(words)
+        unique_words = sorted(set(words))  # Sort unique words for consistent order
         for word in tqdm(unique_words, desc="Building Vocabulary"):
             if word not in self.word_to_index:
                 self.word_to_index[word] = self.next_index
